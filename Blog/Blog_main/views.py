@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Board, Article
+from .models import Board, Article, Author
 
 
 # Create your views here.
@@ -14,10 +14,9 @@ class MainPageView(View):
 
 class BoardsPage(View):
     def get(self, request):
-        boards = Board.objects.filter(user_id=3)
+        boards = Board.objects.filter(user_id=4)
         #tu musi pobierać user_id z cookies po zalogowaniu
         return render(request, 'boards_page.html', {'boards': boards})
-    #trzeba podpiąć strony wnętrza boardów pod linki
 
 
 class BoardView(View):
@@ -26,15 +25,18 @@ class BoardView(View):
         articles = Article.objects.filter(board=board)
         return render(request, 'board_page.html', {'articles': articles,
                                                    'board': board})
-    #tu trzeba podpiąć odpowiednie linki pod artykuły
 
 
 class ArticlePage(View):
     def get(self, request, article_id):
-        pass
+        article = Article.objects.get(id=article_id)
+        author = article.author
+        return render(request, 'article_page.html', {'article': article,
+                                                     'author': author})
 
 
-
+class LogInPage(View):
+    pass
 
 
 

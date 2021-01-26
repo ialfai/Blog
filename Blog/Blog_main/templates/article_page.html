@@ -1,0 +1,10 @@
+{%extends 'base.html'%}
+    {%load static%}
+{%block content%}
+<h2>{{article.name}}</h2>
+Author: {{author.first_name}} {{author.last_name}}<br> Publishing Date: {{article.publishing_date}}
+Requests number: {{article.requests_number}}<br><br>
+{{article.content}}<br>
+
+
+{%endblock%}
