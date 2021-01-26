@@ -1,6 +1,8 @@
 from django.shortcuts import render
-from .models import Board, Article, Author
+from django.views.generic import FormView
 
+from .models import Board, Article, Author
+from .forms import LoginModelForm
 
 # Create your views here.
 from django.views import View
@@ -35,8 +37,14 @@ class ArticlePage(View):
                                                      'author': author})
 
 
-class LogInPage(View):
-    pass
+class LogInPage(FormView):
+    template_name = 'login.html'
+    form_class = LoginModelForm
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 
 

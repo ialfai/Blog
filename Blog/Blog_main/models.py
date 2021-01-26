@@ -7,6 +7,9 @@ class Interests(models.Model):
     name = models.CharField(max_length=288)
     description = models.CharField(max_length=400)
 
+    def __str__(self):
+        return self.name
+
 
 class User(models.Model):
     email = models.EmailField()

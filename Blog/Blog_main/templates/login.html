@@ -1,0 +1,11 @@
+{%extends 'base.html'%}
+    {%load static%}
+{%block content%}
+<h2>Log in</h2>
+<table>
+<form method="post">
+{{form.as_table}}
+<input type="submit" value="Send">
+</form>
+</table>
+{%endblock%}
