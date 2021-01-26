@@ -1,8 +1,11 @@
-from django.shortcuts import render
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.views.generic import FormView
+from django.contrib.auth.models import User
 
-from .models import Board, Article, Author
-from .forms import LoginModelForm
+from .models import Board, Article
+from .forms import Login, Register
 
 # Create your views here.
 from django.views import View
@@ -37,14 +40,43 @@ class ArticlePage(View):
                                                      'author': author})
 
 
-class LogInPage(FormView):
-    template_name = 'login.html'
-    form_class = LoginModelForm
-    success_url = '/'
+class LogInPage(View):
 
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
+    def get(self, request):
+        form = Login()
+        return render(request, 'login.html', {'form': form})
+
+    def post(self, request):
+        form = Login(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            user = authenticate(email=username, password=password)
+            if user:
+                login(request, user)
+                return redirect('/')
+            else:
+                return render(request, 'login.html', {'form': form,
+                                                      'info': "Wrong login data"})
+        return render(request, 'login.html', {'form': form,
+                                              'info': "Wrong login data 1"})
+
+
+class Logout(View):
+    def get(self, request):
+        logout(request)
+        return redirect('/')
+
+
+class Registration(View):
+
+    def get(self, request):
+        form = Register()
+        return render(request, 'login.html', {'form': form})
+
+    def post(self, request):
+        pass
+
 
 
 

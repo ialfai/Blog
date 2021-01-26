@@ -2,10 +2,16 @@
     {%load static%}
 {%block content%}
 <h2>Log in</h2>
-<table>
+
 <form method="post">
-{{form.as_table}}
-<input type="submit" value="Send">
-</form>
-</table>
+    <table>
+    {% csrf_token %}
+    {{form.as_table}}
+    </table><br>
+    <input type="submit" value="Send">
+</form><br><br>
+
+
+{{info}}
+
 {%endblock%}

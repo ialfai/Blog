@@ -1,15 +1,13 @@
-from django.contrib.auth import authenticate, login, logout
-from django.forms import forms
 import django.forms as forms
-from django.core.exceptions import ValidationError
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
-from django.views import View
-from Blog_main.models import User
+from django.contrib.auth.models import User
 
 
-class LoginModelForm(forms.ModelForm):
+class Login(forms.Form):
+    email = forms.CharField(label='Email')
+    password = forms.CharField(label='Password', widget=forms.PasswordInput)
+
+
+class Register(forms.ModelForm):
     class Meta:
         model = User
-        exclude = ['interests', 'active_status', 'creation_date', 'writer']
-
+        fields = ['first_name', 'last_name', 'username', 'password', 'email']
