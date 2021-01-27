@@ -12,6 +12,11 @@
     <img src="/static/pics/costume.png" width="100" height="100"><br>
 {% block content %}
 {% endblock %}
-<footer>User: {{user.email}}</footer>
+{%if user.is_authenticated%}
+    Hello {{user.name}}
+<div><a href="/logout">Logout</a></div>
+{%else%}
+<div><a href="/login">Login</a> or <a href="/register">Register</a></div>
+{%endif%}
 </body>
 </html>

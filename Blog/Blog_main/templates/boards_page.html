@@ -2,10 +2,13 @@
     {%load static%}
 {%block content%}
 <h2>Your Inspiration Boards</h2>
+{%if not boards%}
+<p>You didnt create any boards yet. Click here to start!</p>
+{%else%}
 {%for i in boards%}
 
 <a href="/board/{{i.id}}">{{i.name}}</a><br>
 
 {%endfor%}
-
+{%endif%}
 {%endblock%}

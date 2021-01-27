@@ -19,9 +19,15 @@ class MainPageView(View):
 
 class BoardsPage(View):
     def get(self, request):
-        boards = Board.objects.filter(user_id=4)
+        if request.user.is_authenticated:
+            user_id = request.user.id
+            boards = Board.objects.filter(user_id=user_id)
+            return render(request, 'boards_page.html', {'boards': boards})
+        else:
+            pass
+
         #tu musi pobierać user_id z cookies po zalogowaniu
-        return render(request, 'boards_page.html', {'boards': boards})
+
 
 
 class BoardView(View):
@@ -49,9 +55,9 @@ class LogInPage(View):
     def post(self, request):
         form = Login(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['email']
+            username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            user = authenticate(email=username, password=password)
+            user = authenticate(username=username, password=password)
             if user:
                 login(request, user)
                 return redirect('/')
@@ -75,7 +81,17 @@ class Registration(View):
         return render(request, 'login.html', {'form': form})
 
     def post(self, request):
-        pass
+        form = Register(request.POST)
+        if form.is_valid():
+            User.objects.create_user(username=form.cleaned_data['username'],
+                                     password=form.cleaned_data['password'],
+                                     email=form.cleaned_data['email'],
+                                     first_name=form.cleaned_data['first_name'],
+                                     last_name=form.cleaned_data['last_name'])
+            return redirect('/login/')
+        else:
+            return render(request, 'login.html', {'form': form,
+                                                  'info': 'The data is incorrect'})
 
 
 

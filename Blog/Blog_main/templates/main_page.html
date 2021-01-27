@@ -8,9 +8,14 @@ find articles that match your interest or submit your own article.
 To stay organised use our inspirations boards, where you can save
 your beloved pieces.</div><br>
 
-<div><a href="">Top 10 most popular articles</a> </div>
-<div><a href="">Find articles for you!</a> </div>
-<div><a href="">Login or Register</a></div>
+<div><a href="">Top 10 most popular articles</a></div>
+<div><a href="">Find articles for you!</a></div>
+{%if user.is_authenticated%}
+<div><a href="/boards">My Boards</a></div>
+
+
+{%endif%}
+
 {%endblock%}
 
 
