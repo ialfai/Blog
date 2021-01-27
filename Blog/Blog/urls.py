@@ -16,15 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from Blog_main.views import MainPageView, BoardsPage, BoardView, \
-    ArticlePage, LogInPage, Logout, Registration
+    ArticlePage, LogInPage, Logout, Registration, AddingNewBoard
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', MainPageView.as_view()),
-    path('boards/', BoardsPage.as_view()),
+    path('boards/', BoardsPage.as_view(), name='my_boards'),
     path('board/<int:board_id>', BoardView.as_view()),
     path('article/<int:article_id>', ArticlePage.as_view()),
     path('login/', LogInPage.as_view()),
     path('logout/', Logout.as_view()),
-    path('register/', Registration.as_view())
+    path('register/', Registration.as_view()),
+    path('new_board/', AddingNewBoard.as_view()),
 ]

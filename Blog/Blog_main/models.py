@@ -41,7 +41,7 @@ COLORS = (
 class Board(models.Model):
     article = models.ManyToManyField(Article)
     name = models.CharField(max_length=255)
-    background_color = models.IntegerField()
+    background_color = models.IntegerField(default=1)
     public = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=CASCADE)
 

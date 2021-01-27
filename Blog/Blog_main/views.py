@@ -5,7 +5,7 @@ from django.views.generic import FormView
 from django.contrib.auth.models import User
 
 from .models import Board, Article
-from .forms import Login, Register
+from .forms import Login, Register, NewBoard
 
 # Create your views here.
 from django.views import View
@@ -26,9 +26,6 @@ class BoardsPage(View):
         else:
             pass
 
-        #tu musi pobierać user_id z cookies po zalogowaniu
-
-
 
 class BoardView(View):
     def get(self, request, board_id):
@@ -42,8 +39,39 @@ class ArticlePage(View):
     def get(self, request, article_id):
         article = Article.objects.get(id=article_id)
         author = article.author
+        user = request.user
+        boards = Board.objects.filter(user=user)
+        print(boards)
         return render(request, 'article_page.html', {'article': article,
-                                                     'author': author})
+                                                     'author': author,
+                                                     'boards': boards})
+
+    def post(self, request, article_id):
+        if 'AddToBoard' in request.POST:
+            boards = request.POST.get('board')
+            article = Article.objects.get(id=article_id)
+            author = article.author
+            user = request.user
+            boards_for_checkbox = Board.objects.filter(user=user)
+            b = Board.objects.get(id=boards)
+            b.article.add(article)
+            b.save()
+            return render(request, 'article_page.html', {'article': article,
+                                                         'author': author,
+                                                         'boards': boards_for_checkbox,
+                                                         'info': 'Article has been added to the chosen board'})
+        if 'RequestArticle' in request.POST:
+            article = Article.objects.get(id=article_id)
+            article.requests_number += 1
+            article.save()
+            user = request.user
+            boards = Board.objects.filter(user=user)
+            author = article.author
+            return render(request, 'article_page.html', {'article': article,
+                                                         'author': author,
+                                                         'boards': boards})
+
+
 
 
 class LogInPage(View):
@@ -94,6 +122,21 @@ class Registration(View):
                                                   'info': 'The data is incorrect'})
 
 
+class AddingNewBoard(View):
+    def get(self, request):
+        form = NewBoard()
+        return render(request, 'new_board.html', {'form': form})
+
+    def post(self, request):
+        form = NewBoard(request.POST)
+        if form.is_valid():
+            user_id = request.user.id
+            new_board = Board.objects.create(name=form.cleaned_data['name'],
+                                             user_id=user_id)
+            return redirect('/boards/')
+        else:
+            return render(request, 'new_board.html', {'form': form,
+                                                      'info': 'Incorect date'})
 
 
 
