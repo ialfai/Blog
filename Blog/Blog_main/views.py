@@ -5,7 +5,7 @@ from django.views.generic import FormView
 from django.contrib.auth.models import User
 
 from .models import Board, Article
-from .forms import Login, Register, NewBoard
+from .forms import Login, Register, NewBoard, AddArticle
 
 # Create your views here.
 from django.views import View
@@ -70,8 +70,6 @@ class ArticlePage(View):
             return render(request, 'article_page.html', {'article': article,
                                                          'author': author,
                                                          'boards': boards})
-
-
 
 
 class LogInPage(View):
@@ -139,5 +137,29 @@ class AddingNewBoard(View):
                                                       'info': 'Incorect date'})
 
 
+class AddNewArticle(View):
+    def get(self, request):
+        form = AddArticle()
+        return render(request, 'login.html', {'form': form})
+
+    def post(self, request):
+        form = AddArticle(request.POST)
+        if form.is_valid():
+            author = form.cleaned_data['author']
+            author_ins = User.objects.get(username=author[0])
+            interests = form.cleaned_data['interests']
+            new_article = Article.objects.create(name=form.cleaned_data['name'],
+                                                 description=form.cleaned_data['description'],
+                                                 author=author_ins,
+                                                 publishing_date=form.cleaned_data['publishing_date'],
+                                                 status=form.cleaned_data['status'])
+            new_article.interests.set(interests)
+            return redirect('/all_articles/')
+        else:
+            return render(request, 'login.html', {'form': form,
+                                                  'info': 'There are errors in the form'})
 
 
+class AllArticles(View):
+    def get(self, request):
+        return render(request, 'all_articles.html')

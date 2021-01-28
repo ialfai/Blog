@@ -1,0 +1,12 @@
+{%extends 'base.html'%}
+    {%load static%}
+{%block content%}
+<h2>All articles</h2>
+
+{%for i in articles%}
+
+<a href="/article/{{i.id}}">{{i.name}}</a><br>
+
+{%endfor%}
+
+{%endblock%}

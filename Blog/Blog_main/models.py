@@ -14,9 +14,9 @@ class Interests(models.Model):
 
 
 STATUS = (
-    ('in the process', 1),
-    ('proofreading', 2),
-    ('published', 3)
+    (1, 'in the process'),
+    (2, 'proofreading'),
+    (3, 'published')
 )
 
 

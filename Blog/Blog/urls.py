@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from Blog_main.views import MainPageView, BoardsPage, BoardView, \
-    ArticlePage, LogInPage, Logout, Registration, AddingNewBoard
+    ArticlePage, LogInPage, Logout, Registration, AddingNewBoard,\
+    AddNewArticle, AllArticles
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,4 +29,6 @@ urlpatterns = [
     path('logout/', Logout.as_view()),
     path('register/', Registration.as_view()),
     path('new_board/', AddingNewBoard.as_view()),
+    path('new_article/', AddNewArticle.as_view()),
+    path('all_articles/', AllArticles.as_view())
 ]
