@@ -24,9 +24,17 @@ class NewBoard(forms.ModelForm):
 class AddArticle(forms.Form):
     name = forms.CharField()
     description = forms.CharField()
-    author = forms.ModelMultipleChoiceField(queryset=User.objects.all())
+    author = forms.ModelChoiceField(queryset=User.objects.all())
     publishing_date = forms.DateField(label='Publishing Date', widget=forms.SelectDateWidget)
     content = forms.CharField(widget=forms.Textarea)
     interests = forms.ModelMultipleChoiceField(queryset=Interests.objects.all(),
                                                widget=forms.CheckboxSelectMultiple)
     status = forms.ChoiceField(choices=STATUS)
+
+
+class AddInterestsForm(forms.ModelForm):
+    class Meta:
+        model = Interests
+        exclude = ['date_sent']
+        widgets = {'description': forms.Textarea(attrs={'cols': 40, 'rows': 10})}
+

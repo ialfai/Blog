@@ -1,11 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views.generic import FormView
 from django.contrib.auth.models import User
 
+
 from .models import Board, Article
-from .forms import Login, Register, NewBoard, AddArticle
+from .forms import Login, Register, NewBoard, AddArticle, AddInterestsForm
 
 # Create your views here.
 from django.views import View
@@ -41,10 +43,14 @@ class ArticlePage(View):
         author = article.author
         user = request.user
         boards = Board.objects.filter(user=user)
-        print(boards)
-        return render(request, 'article_page.html', {'article': article,
-                                                     'author': author,
-                                                     'boards': boards})
+        if boards:
+            return render(request, 'article_page.html', {'article': article,
+                                                         'author': author,
+                                                         'boards': boards})
+        else:
+            return render(request, 'article_page.html', {'article': article,
+                                                         'author': author,
+                                                         'info': 'To save this article, create a board!'})
 
     def post(self, request, article_id):
         if 'AddToBoard' in request.POST:
@@ -137,20 +143,21 @@ class AddingNewBoard(View):
                                                       'info': 'Incorect date'})
 
 
-class AddNewArticle(View):
+class AddNewArticle(PermissionRequiredMixin, View):
+    permission_required = 'blog_main.set_article'
+
     def get(self, request):
+
         form = AddArticle()
         return render(request, 'login.html', {'form': form})
 
     def post(self, request):
         form = AddArticle(request.POST)
         if form.is_valid():
-            author = form.cleaned_data['author']
-            author_ins = User.objects.get(username=author[0])
             interests = form.cleaned_data['interests']
             new_article = Article.objects.create(name=form.cleaned_data['name'],
                                                  description=form.cleaned_data['description'],
-                                                 author=author_ins,
+                                                 author=form.cleaned_data['author'],
                                                  publishing_date=form.cleaned_data['publishing_date'],
                                                  status=form.cleaned_data['status'],
                                                  content=form.cleaned_data['content'])
@@ -165,3 +172,16 @@ class AllArticles(View):
     def get(self, request):
         articles = Article.objects.all()
         return render(request, 'all_articles.html', {'articles': articles})
+
+
+class AddInterests(PermissionRequiredMixin, FormView):
+    permission_required = 'blog_main.set_article'
+    template_name = 'login.html'
+    form_class = AddInterestsForm
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+

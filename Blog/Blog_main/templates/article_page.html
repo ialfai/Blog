@@ -7,12 +7,13 @@ Requests number: {{article.requests_number}}<br><br>
 <form method="post">
 
     {% csrf_token %}
-
+{%if not info%}
 {%for board in boards%}
 <input type="radio" name="board" id={{board.id}} value={{board.id}}>
 <label for="{{board.id}}">{{board.name}}</label><br>
 {%endfor%}
 <input type="submit" class="btn btn-outline-secondary" name="AddToBoard" value="Add to your board"><br>
+{%endif%}
 {{info}}
 </form>
 <br>
@@ -22,7 +23,8 @@ Requests number: {{article.requests_number}}<br><br>
 <input type="submit" class="btn btn-outline-secondary" name="RequestArticle" value="Request this article"><br>
 
 </form>
-{{article.content}}<br>
+<p>{{article.content}}</p>
+<br>
 
 
 {%endblock%}
