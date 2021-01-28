@@ -152,7 +152,8 @@ class AddNewArticle(View):
                                                  description=form.cleaned_data['description'],
                                                  author=author_ins,
                                                  publishing_date=form.cleaned_data['publishing_date'],
-                                                 status=form.cleaned_data['status'])
+                                                 status=form.cleaned_data['status'],
+                                                 content=form.cleaned_data['content'])
             new_article.interests.set(interests)
             return redirect('/all_articles/')
         else:
@@ -162,4 +163,5 @@ class AddNewArticle(View):
 
 class AllArticles(View):
     def get(self, request):
-        return render(request, 'all_articles.html')
+        articles = Article.objects.all()
+        return render(request, 'all_articles.html', {'articles': articles})
