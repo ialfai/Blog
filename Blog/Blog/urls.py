@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from Blog_main.views import MainPageView, BoardsPage, BoardView, \
     ArticlePage, LogInPage, Logout, Registration, AddingNewBoard,\
-    AddNewArticle, AllArticles, AddInterests
+    AddNewArticle, AllArticles, AddInterests, QuizView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,4 +32,5 @@ urlpatterns = [
     path('new_article/', AddNewArticle.as_view()),
     path('all_articles/', AllArticles.as_view()),
     path('new_interest/', AddInterests.as_view()),
+    path('quiz/', QuizView.as_view()),
 ]

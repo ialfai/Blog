@@ -1,6 +1,6 @@
 import django.forms as forms
 from django.contrib.auth.models import User
-from .models import Board, Article, Interests, STATUS
+from .models import Board, Article, Interests, STATUS, UsersInterest
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
@@ -37,4 +37,10 @@ class AddInterestsForm(forms.ModelForm):
         model = Interests
         exclude = ['date_sent']
         widgets = {'description': forms.Textarea(attrs={'cols': 40, 'rows': 10})}
+
+
+class QuizForm(forms.Form):
+    interest = forms.ModelMultipleChoiceField(label='Share with us your interest', queryset=Interests.objects.all(),
+                                              widget=forms.CheckboxSelectMultiple(attrs={}))
+#
 

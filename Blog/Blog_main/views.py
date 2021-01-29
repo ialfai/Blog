@@ -6,8 +6,9 @@ from django.views.generic import FormView
 from django.contrib.auth.models import User
 
 
-from .models import Board, Article
-from .forms import Login, Register, NewBoard, AddArticle, AddInterestsForm
+from .models import Board, Article, UsersInterest
+from .forms import Login, Register, NewBoard, AddArticle, \
+    AddInterestsForm, AddInterestsForm, QuizForm
 
 # Create your views here.
 from django.views import View
@@ -183,5 +184,29 @@ class AddInterests(PermissionRequiredMixin, FormView):
     def form_valid(self, form):
         form.save()
         return super().form_valid(form)
+
+
+class QuizView(View):
+
+    def get(self, request):
+        form = QuizForm()
+        return render(request, 'quiz.html', {'form': form})
+
+    def post(self, request):
+        form = QuizForm(request.POST)
+        user = request.user
+        if form.is_valid():
+            interests = form.cleaned_data['interest']
+            for i in interests:
+                new_interests = UsersInterest.objects.create(user=user,
+                                                             interest=i)
+            return redirect('dedicated_articles.html')
+        else:
+            return render(request, 'quiz.html', {'form': form,
+                                                 'info': 'Something went wrong'})
+
+
+class DedicatedArticles(View):
+    pass
 
 

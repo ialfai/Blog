@@ -4,19 +4,27 @@
 <h2>{{article.name}}</h2>
 Author: {{author.first_name}} {{author.last_name}}<br> Publishing Date: {{article.publishing_date}}
 Requests number: {{article.requests_number}}<br><br>
+
 <form method="post">
 
     {% csrf_token %}
+
 {%if not info%}
+
 {%for board in boards%}
 <input type="radio" name="board" id={{board.id}} value={{board.id}}>
 <label for="{{board.id}}">{{board.name}}</label><br>
 {%endfor%}
+
 <input type="submit" class="btn btn-outline-secondary" name="AddToBoard" value="Add to your board"><br>
+
 {%endif%}
+
 {{info}}
 </form>
+
 <br>
+
 <form method="post">
 
     {% csrf_token %}

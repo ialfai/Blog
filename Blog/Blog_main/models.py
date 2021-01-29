@@ -46,3 +46,9 @@ class Board(models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE)
 
 
+class UsersInterest(models.Model):
+    interest = models.ForeignKey(Interests, on_delete=CASCADE)
+    user = models.ForeignKey(User, on_delete=CASCADE)
+
+
+
