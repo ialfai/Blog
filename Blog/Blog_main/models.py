@@ -6,11 +6,10 @@ from django.contrib.auth.models import User
 
 class Interests(models.Model):
     name = models.CharField(max_length=288)
-    description = models.CharField(max_length=400)
+    user = models.ManyToManyField(User)
 
     def __str__(self):
         return self.name
-
 
 
 STATUS = (

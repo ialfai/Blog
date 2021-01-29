@@ -1,10 +1,11 @@
 {%extends 'base.html'%}
 {%block content%}
-<form method="post">
-    {% csrf_token %}
 
-{{form}}
-<input type="submit" value="Confirm">
+{%for i in articles%}
+<p>
+    <a href="/article/{{i.id}}">{{i.name}}</a>
 
-</form>
+</p>
+{%endfor%}
+
 {%endblock%}

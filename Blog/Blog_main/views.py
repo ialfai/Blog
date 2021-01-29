@@ -6,7 +6,7 @@ from django.views.generic import FormView
 from django.contrib.auth.models import User
 
 
-from .models import Board, Article, UsersInterest
+from .models import Board, Article, UsersInterest, Interests
 from .forms import Login, Register, NewBoard, AddArticle, \
     AddInterestsForm, AddInterestsForm, QuizForm
 
@@ -190,23 +190,34 @@ class QuizView(View):
 
     def get(self, request):
         form = QuizForm()
-        return render(request, 'quiz.html', {'form': form})
+        interests = Interests.objects.all()
+        return render(request, 'quiz.html', {'form': form,
+                                             'interests': interests})
 
     def post(self, request):
         form = QuizForm(request.POST)
-        user = request.user
         if form.is_valid():
+            user = request.user
             interests = form.cleaned_data['interest']
+            users_old_interests = Interests.objects.filter(user=user)
+            for a in users_old_interests:
+                old_interests = Interests.objects.get(name=a)
+                old_interests.user.remove(user)
             for i in interests:
-                new_interests = UsersInterest.objects.create(user=user,
-                                                             interest=i)
-            return redirect('dedicated_articles.html')
+                new_interests = Interests.objects.get(name=i)
+                new_interests.user.add(user)
+            return redirect('/dedicated_articles/')
         else:
             return render(request, 'quiz.html', {'form': form,
                                                  'info': 'Something went wrong'})
 
 
 class DedicatedArticles(View):
-    pass
+
+    def get(self, request):
+        user = request.user
+        user_interests = Interests.objects.filter(user=user)
+        articles = Article.objects.filter(interests__in=user_interests)
+        return render(request, 'dedicated_articles.html', {'articles': articles})
 
 
