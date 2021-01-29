@@ -44,7 +44,11 @@ class ArticlePage(View):
         author = article.author
         user = request.user
         boards = Board.objects.filter(user=user)
-        if boards:
+        if Board.objects.filter(article=article, user=user):
+            return render(request, 'article_page.html', {'article': article,
+                                                         'author': author,
+                                                         'stop': 'stop'})
+        elif boards:
             return render(request, 'article_page.html', {'article': article,
                                                          'author': author,
                                                          'boards': boards})
@@ -74,9 +78,7 @@ class ArticlePage(View):
             user = request.user
             boards = Board.objects.filter(user=user)
             author = article.author
-            return render(request, 'article_page.html', {'article': article,
-                                                         'author': author,
-                                                         'boards': boards})
+            return redirect(f'/article/{article.id}')
 
 
 class LogInPage(View):

@@ -5,8 +5,8 @@
 Author: {{author.first_name}} {{author.last_name}}<br> Publishing Date: {{article.publishing_date}}
 Requests number: {{article.requests_number}}<br><br>
 
+{%if not stop%}
 <form method="post">
-
     {% csrf_token %}
 
 {%if not info%}
@@ -22,7 +22,7 @@ Requests number: {{article.requests_number}}<br><br>
 
 {{info}}
 </form>
-
+{%endif%}
 <br>
 
 <form method="post">
