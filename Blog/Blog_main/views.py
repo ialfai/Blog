@@ -44,11 +44,7 @@ class ArticlePage(View):
         author = article.author
         user = request.user
         boards = Board.objects.filter(user=user)
-        if Board.objects.filter(article=article, user=user):
-            return render(request, 'article_page.html', {'article': article,
-                                                         'author': author,
-                                                         'stop': 'stop'})
-        elif boards:
+        if boards:
             return render(request, 'article_page.html', {'article': article,
                                                          'author': author,
                                                          'boards': boards})
@@ -75,10 +71,14 @@ class ArticlePage(View):
             article = Article.objects.get(id=article_id)
             article.requests_number += 1
             article.save()
-            user = request.user
-            boards = Board.objects.filter(user=user)
             author = article.author
-            return redirect(f'/article/{article.id}')
+            user = request.user
+            boards_for_checkbox = Board.objects.filter(user=user)
+            return render(request, 'article_page.html', {'article': article,
+                                                         'author': author,
+                                                         'boards': boards_for_checkbox,
+                                                         'info': 'Article has been added to the chosen board'})
+            # return redirect(f'/article/{article.id}')
 
 
 class LogInPage(View):
