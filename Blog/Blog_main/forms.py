@@ -30,6 +30,7 @@ class AddArticle(forms.Form):
     interests = forms.ModelMultipleChoiceField(queryset=Interests.objects.all(),
                                                widget=forms.CheckboxSelectMultiple)
     status = forms.ChoiceField(choices=STATUS)
+    picture = forms.ImageField()
 
 
 class AddInterestsForm(forms.ModelForm):

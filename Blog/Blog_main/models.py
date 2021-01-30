@@ -28,6 +28,7 @@ class Article(models.Model):
     publishing_date = models.DateField()
     content = models.TextField(null=True)
     interests = models.ManyToManyField(Interests)
+    picture = models.ImageField(null=True, upload_to='media')
 
 
 COLORS = (

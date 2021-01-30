@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <h1>Articulista</h1>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
     <meta charset="UTF-8">
     {%load static%}
     <title>Articulista</title>
 
-    <nav class="navbar navbar-expand-sm bg-light navbar-light">
+    <nav class="navbar sticky-top navbar-expand-sm bg-light navbar-light">
+        <div class="">
+                <p class="navbar-text">Articulista</p>
     <a class="navbar-brand" href="/"><img src="/static/pics/costume.png"width="100" height="100"></a>
+
+        </div>
   <!-- Links -->
   <ul class="navbar-nav">
     <li class="nav-item">
@@ -24,6 +28,9 @@
     <li class="nav-item">
       <a class="nav-link" href="/quiz">Articles for you!</a>
     </li>
+     <li class="nav-item">
+      <a class="nav-link" href="/all_articles">All articles</a>
+    </li>
           {%if user.is_authenticated%}
     <li class="nav-item">
       <a class="nav-link" href="/logout">Logout</a>
@@ -36,8 +43,9 @@
   </ul>
 
 </nav>
+
 </head>
-<body>
+<body style="background-color: #d1cdc7">
 
 
 

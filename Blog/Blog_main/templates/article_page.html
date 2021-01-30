@@ -1,6 +1,11 @@
 {%extends 'base.html'%}
     {%load static%}
 {%block content%}
+
+{% load static %}
+<!--<img src="{% static 'pics/example.jpg' %}" alt="My image">-->
+<img src="/{{article.picture}}" class="img-thumbnail" alt="Responsive image" style="height: 300px">
+
 <h2>{{article.name}}</h2>
 Author: {{author.first_name}} {{author.last_name}}<br> Publishing Date: {{article.publishing_date}}
 Requests number: {{article.requests_number}}<br><br>

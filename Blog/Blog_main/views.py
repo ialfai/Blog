@@ -6,7 +6,7 @@ from django.views.generic import FormView
 from django.contrib.auth.models import User
 
 
-from .models import Board, Article, UsersInterest, Interests
+from .models import Board, Article, Interests
 from .forms import Login, Register, NewBoard, AddArticle, \
     AddInterestsForm, AddInterestsForm, QuizForm
 
@@ -40,43 +40,45 @@ class BoardView(View):
 
 class ArticlePage(View):
     def get(self, request, article_id):
-        article = Article.objects.get(id=article_id)
-        author = article.author
+        article1 = Article.objects.get(id=article_id)
+        author = article1.author
         user = request.user
         boards = Board.objects.filter(user=user)
         if boards:
-            return render(request, 'article_page.html', {'article': article,
+            return render(request, 'article_page.html', {'article': article1,
                                                          'author': author,
                                                          'boards': boards})
         else:
-            return render(request, 'article_page.html', {'article': article,
+            return render(request, 'article_page.html', {'article': article1,
                                                          'author': author,
                                                          'info': 'To save this article, create a board!'})
 
     def post(self, request, article_id):
         if 'AddToBoard' in request.POST:
             boards = request.POST.get('board')
-            article = Article.objects.get(id=article_id)
-            author = article.author
+            article1 = Article.objects.get(id=article_id)
+            author = article1.author
             user = request.user
             boards_for_checkbox = Board.objects.filter(user=user)
             b = Board.objects.get(id=boards)
-            b.article.add(article)
+            b.article.add(article1)
             b.save()
-            return render(request, 'article_page.html', {'article': article,
+            return render(request, 'article_page.html', {'article': article1,
                                                          'author': author,
                                                          'boards': boards_for_checkbox,
                                                          'info': 'Article has been added to the chosen board'})
         if 'RequestArticle' in request.POST:
-            article = Article.objects.get(id=article_id)
-            article.requests_number += 1
-            article.save()
-            author = article.author
+            article1 = Article.objects.get(id=article_id)
+            article1.requests_number += 1
+            article1.save()
+            author = article1.author
             user = request.user
+            articles = Article.objects.all()
             boards_for_checkbox = Board.objects.filter(user=user)
-            return render(request, 'article_page.html', {'article': article,
+            return render(request, 'article_page.html', {'article': article1,
                                                          'author': author,
                                                          'boards': boards_for_checkbox,
+                                                         'articles': articles,
                                                          'info': 'Article has been added to the chosen board'})
             # return redirect(f'/article/{article.id}')
 
@@ -155,16 +157,20 @@ class AddNewArticle(PermissionRequiredMixin, View):
         return render(request, 'login.html', {'form': form})
 
     def post(self, request):
-        form = AddArticle(request.POST)
+        form = AddArticle(request.POST, request.FILES)
         if form.is_valid():
+            picture = form.cleaned_data.get('picture')
+            print('lala', picture)
             interests = form.cleaned_data['interests']
             new_article = Article.objects.create(name=form.cleaned_data['name'],
                                                  description=form.cleaned_data['description'],
                                                  author=form.cleaned_data['author'],
                                                  publishing_date=form.cleaned_data['publishing_date'],
                                                  status=form.cleaned_data['status'],
-                                                 content=form.cleaned_data['content'])
+                                                 content=form.cleaned_data['content'],
+                                                 picture=form.cleaned_data.get('picture'))
             new_article.interests.set(interests)
+            print('lala', picture)
             return redirect('/all_articles/')
         else:
             return render(request, 'login.html', {'form': form,
