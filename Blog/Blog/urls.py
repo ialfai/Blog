@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from Blog_main.views import MainPageView, BoardsPage, BoardView, \
     ArticlePage, LogInPage, Logout, Registration, AddingNewBoard,\
-    AddNewArticle, AllArticles, AddInterests, QuizView, DedicatedArticles
+    AddNewArticle, AllArticles, AddInterests, QuizView, \
+    DedicatedArticles, Extension, DeleteArticle, DeleteBoard, Top10
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -38,6 +39,11 @@ urlpatterns = [
     path('new_interest/', AddInterests.as_view()),
     path('quiz/', QuizView.as_view()),
     path('dedicated_articles/', DedicatedArticles.as_view()),
+    path('hints/', Extension.as_view()),
+    path('delete_article/<int:article_id>/<int:board_id>', DeleteArticle.as_view()),
+    path('delete_board/<int:board_id>', DeleteBoard.as_view()),
+    path('top10/', Top10.as_view()),
+
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

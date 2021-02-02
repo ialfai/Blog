@@ -6,7 +6,15 @@
 {%for i in articles%}
 
 <a href="/article/{{i.id}}">{{i.name}}</a><br>
+<a href="/delete_article/{{i.id}}/{{board.id}}">Remove article form this board</a><br><br>
 
 {%endfor%}
+<br><br>
+
+
 
 {%endblock%}
+
+
+
+

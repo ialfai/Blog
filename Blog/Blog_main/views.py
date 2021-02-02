@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import FormView
 from django.contrib.auth.models import User
@@ -27,7 +27,7 @@ class BoardsPage(View):
             boards = Board.objects.filter(user_id=user_id)
             return render(request, 'boards_page.html', {'boards': boards})
         else:
-            pass
+            return render(request, 'boards_page.html', {'info': 'You are not logged in. To create boards log in'})
 
 
 class BoardView(View):
@@ -227,5 +227,47 @@ class DedicatedArticles(View):
         user_interests = Interests.objects.filter(user=user)
         articles = Article.objects.filter(interests__in=user_interests)
         return render(request, 'dedicated_articles.html', {'articles': articles})
+
+
+class Extension(View):
+    def get(self, request):
+        id = request.GET.get('start')
+        user = User.objects.get(id=id)
+        boards = Board.objects.filter(user=user)
+        boards_list = []
+        for i in boards:
+            boards_list.append(i.name)
+        response = JsonResponse({'headers':  'Access-Control-Allow-Origin: *',
+                                 'boards_list': boards_list})
+        return response
+
+
+class DeleteArticle(View):
+
+    def get(self, request, article_id, board_id):
+        user = request.user
+        article1 = Article.objects.get(id=article_id)
+        board = Board.objects.get(id=board_id)
+        board.article.remove(article1)
+        return redirect('/boards')
+
+
+class DeleteBoard(View):
+
+    def get(self, request, board_id):
+        board = Board.objects.get(id=board_id)
+        board.delete()
+        return redirect('/boards')
+
+
+class Top10(View):
+
+    def get(self, request):
+        articles = Article.objects.all().order_by('-requests_number')
+        articles = articles[0:9]
+        return render(request, 'top10.html', {'articles': articles})
+
+
+
 
 

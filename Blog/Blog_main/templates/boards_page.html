@@ -2,15 +2,18 @@
     {%load static%}
 {%block content%}
 <h2>Your Inspiration Boards</h2>
+
+{{info}}
 {%if not boards%}
-<p>You didnt create any boards yet. Click here to start!</p>
+<p>You didnt create any boards yet. Click <a href="/new_board">here </a> to start!</p>
 {%else%}
 {%for i in boards%}
 
 <a href="/board/{{i.id}}">{{i.name}}</a><br>
+<a href="/delete_board/{{i.id}}">Remove this board</a><br>
 
 {%endfor%}
 {%endif%}
 <br>
-<div><a href="/new_board">Create a new board</a> </div>
+
 {%endblock%}

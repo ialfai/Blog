@@ -52,3 +52,7 @@ class UsersInterest(models.Model):
 
 
 
+
+
+
+
