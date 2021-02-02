@@ -137,15 +137,16 @@ class AddingNewBoard(View):
         return render(request, 'new_board.html', {'form': form})
 
     def post(self, request):
-        form = NewBoard(request.POST)
+        form = NewBoard(request.POST, request.FILES)
         if form.is_valid():
             user_id = request.user.id
             new_board = Board.objects.create(name=form.cleaned_data['name'],
-                                             user_id=user_id)
+                                             user_id=user_id,
+                                             picture=form.cleaned_data['picture'])
             return redirect('/boards/')
         else:
             return render(request, 'new_board.html', {'form': form,
-                                                      'info': 'Incorect date'})
+                                                      'info': 'Incorect data'})
 
 
 class AddNewArticle(PermissionRequiredMixin, View):
@@ -160,7 +161,6 @@ class AddNewArticle(PermissionRequiredMixin, View):
         form = AddArticle(request.POST, request.FILES)
         if form.is_valid():
             picture = form.cleaned_data.get('picture')
-            print('lala', picture)
             interests = form.cleaned_data['interests']
             new_article = Article.objects.create(name=form.cleaned_data['name'],
                                                  description=form.cleaned_data['description'],
@@ -170,7 +170,6 @@ class AddNewArticle(PermissionRequiredMixin, View):
                                                  content=form.cleaned_data['content'],
                                                  picture=form.cleaned_data.get('picture'))
             new_article.interests.set(interests)
-            print('lala', picture)
             return redirect('/all_articles/')
         else:
             return render(request, 'login.html', {'form': form,

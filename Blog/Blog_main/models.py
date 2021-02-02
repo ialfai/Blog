@@ -44,6 +44,7 @@ class Board(models.Model):
     background_color = models.IntegerField(default=1)
     public = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=CASCADE)
+    picture = models.ImageField(null=True, upload_to='media')
 
 
 class UsersInterest(models.Model):

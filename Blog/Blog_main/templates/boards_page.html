@@ -1,18 +1,39 @@
 {%extends 'base.html'%}
     {%load static%}
 {%block content%}
-<h2>Your Inspiration Boards</h2>
+
 
 {{info}}
 {%if not boards%}
 <p>You didnt create any boards yet. Click <a href="/new_board">here </a> to start!</p>
 {%else%}
+
+
+<h2 class="d-flex justify-content-center">Your boards:</h2>
+
+
+<div class="d-flex flex-row flex-wrap d-flex justify-content-center">
 {%for i in boards%}
+<div class="p-2 d-flex justify-content-center">
+<div class="card bg-light mb-3" style="width: 18rem;">
+  <img class="card-img-top" src="/media/{{i.picture}}" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title d-flex justify-content-center">{{i.name}}</h5>
+    <p class="card-text d-flex justify-content-center">{{i.description}}</p>
+      <p class="card-text d-flex justify-content-center"><a href="/delete_board/{{i.id}}">Remove this board</a></p><br>
+    <a href="/board/{{i.id}}" class="btn btn-outline-secondary d-flex justify-content-center">Get inspired</a>
+  </div>
+</div>
+</div>
+</div>
 
-<a href="/board/{{i.id}}">{{i.name}}</a><br>
-<a href="/delete_board/{{i.id}}">Remove this board</a><br>
 
-{%endfor%}
+
+
+{%endfor%}<br><br>
+
+
+
 {%endif%}
 <br>
 
