@@ -236,7 +236,7 @@ class Extension(View):
         boards_list = []
         for i in boards:
             boards_list.append(i.name)
-        response = JsonResponse({'headers':  'Access-Control-Allow-Origin: *',
+        response = JsonResponse({'header':  'Access-Control-Allow-Origin: *',
                                  'boards_list': boards_list})
         return response
 
@@ -265,6 +265,9 @@ class Top10(View):
         articles = Article.objects.all().order_by('-requests_number')
         articles = articles[0:9]
         return render(request, 'top10.html', {'articles': articles})
+
+
+
 
 
 
