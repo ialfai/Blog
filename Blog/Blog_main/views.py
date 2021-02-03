@@ -15,12 +15,19 @@ from django.views import View
 
 
 class MainPageView(View):
+
+    """This view is responsible for displaying the main page of the blog. It containst a navigation bar
+     as well as login/registration option, access to all, best and chosen articles."""
+
     def get(self, request):
         return render(request, 'main_page.html')
-    #trzeba podpiąć strony pod linki: top 10 artykułów
 
 
 class BoardsPage(View):
+
+    """This view is responsible for displaying all boards that the user has created. It contains options of
+    deleting an unwanted board and accessing any board"""
+
     def get(self, request):
         if request.user.is_authenticated:
             user_id = request.user.id
@@ -31,6 +38,10 @@ class BoardsPage(View):
 
 
 class BoardView(View):
+
+    """This view is responsible for displaying an inside of a given board with all the articles that have been
+    saved inside of it. It allows user to also delete an unwanted article from the board."""
+
     def get(self, request, board_id):
         board = Board.objects.get(id=board_id)
         articles = Article.objects.filter(board=board)
@@ -39,6 +50,10 @@ class BoardView(View):
 
 
 class ArticlePage(View):
+
+    """This view is responsible for displaying an article with information regarding writer and publication date.
+    There is a function for requesting the article and a function for adding it to a chosen board."""
+
     def get(self, request, article_id):
         article1 = Article.objects.get(id=article_id)
         author = article1.author
@@ -85,6 +100,8 @@ class ArticlePage(View):
 
 class LogInPage(View):
 
+    """This view is responsible for displaying a login form. It allows registered user to login to the service"""
+
     def get(self, request):
         form = Login()
         return render(request, 'login.html', {'form': form})
@@ -106,12 +123,17 @@ class LogInPage(View):
 
 
 class Logout(View):
+
+    """This view is responsible for logging the user out of the service"""
+
     def get(self, request):
         logout(request)
         return redirect('/')
 
 
 class Registration(View):
+
+    """This view is responsible for displaying a registration form. It allows new users to register to the service"""
 
     def get(self, request):
         form = Register()
@@ -132,6 +154,10 @@ class Registration(View):
 
 
 class AddingNewBoard(View):
+
+    """This view is responsible for displaying a form that allows users to create a new board. The user can choose
+    a name and a theme picture for the board"""
+
     def get(self, request):
         form = NewBoard()
         return render(request, 'new_board.html', {'form': form})
@@ -150,6 +176,11 @@ class AddingNewBoard(View):
 
 
 class AddNewArticle(PermissionRequiredMixin, View):
+
+    """This is a restricted view, available only to moderators. This view is responsible for displaying
+    a form to add a new article. Article has many features like: author data, publication date, article status,
+    picture, requests number etc."""
+
     permission_required = 'blog_main.set_article'
 
     def get(self, request):
@@ -177,12 +208,20 @@ class AddNewArticle(PermissionRequiredMixin, View):
 
 
 class AllArticles(View):
+
+    """This view is responsible for displaying all articles that are in the database"""
+
     def get(self, request):
         articles = Article.objects.all()
         return render(request, 'all_articles.html', {'articles': articles})
 
 
 class AddInterests(PermissionRequiredMixin, FormView):
+
+    """This view is responsible for adding new fields of interest to the Interests table. This Interests table is used
+    to label articles with interests. Based on this classification a user can choose what areas is he interested in.
+    These interests are all displayed to the user in a quiz view"""
+
     permission_required = 'blog_main.set_article'
     template_name = 'login.html'
     form_class = AddInterestsForm
@@ -194,6 +233,8 @@ class AddInterests(PermissionRequiredMixin, FormView):
 
 
 class QuizView(View):
+
+    """This view is responsible for displaying a form that allows users to access articles based on their interests"""
 
     def get(self, request):
         form = QuizForm()
@@ -221,6 +262,9 @@ class QuizView(View):
 
 class DedicatedArticles(View):
 
+    """This view is responsible for displaying to the user all articles that have been labeled with interests
+    same as user has chosen in the quiz view"""
+
     def get(self, request):
         user = request.user
         user_interests = Interests.objects.filter(user=user)
@@ -229,6 +273,10 @@ class DedicatedArticles(View):
 
 
 class Extension(View):
+
+    """This view is responsible for creating a json file that will be used for the extension to list all available
+    boards"""
+
     def get(self, request):
         id = request.GET.get('start')
         user = User.objects.get(id=id)
@@ -243,6 +291,8 @@ class Extension(View):
 
 class DeleteArticle(View):
 
+    """This view is responsible for remove an article from a given board"""
+
     def get(self, request, article_id, board_id):
         user = request.user
         article1 = Article.objects.get(id=article_id)
@@ -253,6 +303,8 @@ class DeleteArticle(View):
 
 class DeleteBoard(View):
 
+    """This view is responsible for deleting a board"""
+
     def get(self, request, board_id):
         board = Board.objects.get(id=board_id)
         board.delete()
@@ -260,6 +312,8 @@ class DeleteBoard(View):
 
 
 class Top10(View):
+
+    """This view is responsible for displaying 10 articles with biggest number of requests"""
 
     def get(self, request):
         articles = Article.objects.all().order_by('-requests_number')
