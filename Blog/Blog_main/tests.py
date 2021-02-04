@@ -1,7 +1,8 @@
 import pytest
 from django.contrib.auth.models import User, Permission
 from django.test import TestCase, Client
-from conftest import unauthorized_user, client, test_article
+from conftest import unauthorized_user, client, test_article, test_board
+from Blog_main.models import Board
 # Create your tests here.
 
 
@@ -22,11 +23,38 @@ def test_request_article(client, unauthorized_user, test_article):
 
 @pytest.mark.django_db
 def test_login(client):
-    response = client.post('/login', {'username': 'Ania', 'password': 'haha'})
+    response = client.post('/new_board')
     assert response.status_code == 301
-    assert request.user.is_authenticated
 
 
+@pytest.mark.django_db
+def test_add_article_to_board(client, test_article, test_board, unauthorized_user):
+    client.force_login(unauthorized_user)
+    response = client.post(f'/article/{test_article.id}', {'AddToBoard': '',
+                                                          'board': test_board.id
+                                                          })
+    assert test_article in test_board.article.all()
+
+
+@pytest.mark.django_db
+def test_register(client):
+    response = client.post('/register/', {'first_name': 'lola',
+                                          'last_name': 'bzik',
+                                          'username': 'malinka',
+                                          'password': 'haha',
+                                          'email': 'hgjhg@hjkhjk.com'})
+    print(response.content)
+    assert response.status_code == 302
+    assert User.objects.get(username='malinka')
+
+
+@pytest.mark.django_db
+def test_add_new_board(client, unauthorized_user):
+    client.force_login(unauthorized_user)
+    response = client.post('/new_board/', {'name': 'podróże',
+                                           'picture': ''})
+
+    assert Board.objects.filter(name='podróże', user=unauthorized_user)
 
 
 

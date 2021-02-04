@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import FormView
@@ -153,7 +154,10 @@ class Registration(View):
                                                   'info': 'The data is incorrect'})
 
 
-class AddingNewBoard(View):
+class AddingNewBoard(LoginRequiredMixin, View):
+
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
 
     """This view is responsible for displaying a form that allows users to create a new board. The user can choose
     a name and a theme picture for the board"""
@@ -232,7 +236,10 @@ class AddInterests(PermissionRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class QuizView(View):
+class QuizView(LoginRequiredMixin, View):
+
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
 
     """This view is responsible for displaying a form that allows users to access articles based on their interests"""
 

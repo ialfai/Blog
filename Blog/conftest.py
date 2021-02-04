@@ -1,13 +1,19 @@
 import pytest
 from django.contrib.auth.models import User
 from django.test import Client
-from Blog_main.models import Article
+from Blog_main.models import Article, Board
 
 
 @pytest.fixture
 def unauthorized_user():
     unauthorized_user = User.objects.create_user(username='Ania', password='haha')
     return unauthorized_user
+
+
+@pytest.fixture
+def another_user():
+    another_user = User.objects.create_user(username='Zdzisława', password='haha')
+    return another_user
 
 
 @pytest.fixture
@@ -30,4 +36,12 @@ def test_article():
                                      publishing_date='2020-01-01',
                                      picture=None)
     return article
+
+
+@pytest.fixture
+def test_board(unauthorized_user):
+    test_boards = Board.objects.create(name='test_name',
+                                       user=unauthorized_user)
+    return test_boards
+
 
