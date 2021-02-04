@@ -1,8 +1,8 @@
 import pytest
 from django.contrib.auth.models import User, Permission
 from django.test import TestCase, Client
-from conftest import unauthorized_user, client, test_article, test_board
-from Blog_main.models import Board
+from conftest import unauthorized_user, client, test_article, test_board, authorized_user
+from Blog_main.models import Board, Interests
 # Create your tests here.
 
 
@@ -57,6 +57,18 @@ def test_add_new_board(client, unauthorized_user):
     assert Board.objects.filter(name='podróże', user=unauthorized_user)
 
 
+@pytest.mark.django_db
+def test_add_interests(client, authorized_user):
+    client.force_login(authorized_user)
+    response = client.post('/new_interest/', {'interest': 'gotowanie'})
+    assert Interests.objects.filter(user=authorized_user).name == 'gotowanie'
+
+
+@pytest.mark.django_db
+def test_do_the_quiz(client, unauthorized_user, test_interests):
+    client.force_login(unauthorized_user)
+    response = client.post('/quiz/', {'interest': test_interests.id})
+    assert test_interests in Interests.objects.filter(user=unauthorized_user)
 
 
 

@@ -43,5 +43,5 @@ class AddInterestsForm(forms.ModelForm):
 class QuizForm(forms.Form):
     interest = forms.ModelMultipleChoiceField(label='Share with us your interest', queryset=Interests.objects.all(),
                                               widget=forms.CheckboxSelectMultiple(attrs={}))
-#
+
 

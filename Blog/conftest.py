@@ -1,7 +1,7 @@
 import pytest
 from django.contrib.auth.models import User
 from django.test import Client
-from Blog_main.models import Article, Board
+from Blog_main.models import Article, Board, Interests
 
 
 @pytest.fixture
@@ -44,4 +44,16 @@ def test_board(unauthorized_user):
                                        user=unauthorized_user)
     return test_boards
 
+
+@pytest.fixture
+def test_interests():
+    test_interests = Interests.objects.create(name='motoryzacja')
+    return test_interests
+
+
+@pytest.fixture
+def authorized_user():
+    authorized_user = User.objects.create_user(username='Ula', password='haha')
+    authorized_user.user_permissions.add('blog_main.set_interests')
+    return authorized_user
 

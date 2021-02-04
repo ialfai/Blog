@@ -24,7 +24,10 @@ class MainPageView(View):
         return render(request, 'main_page.html')
 
 
-class BoardsPage(View):
+class BoardsPage(LoginRequiredMixin, View):
+
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
 
     """This view is responsible for displaying all boards that the user has created. It contains options of
     deleting an unwanted board and accessing any board"""
@@ -226,7 +229,7 @@ class AddInterests(PermissionRequiredMixin, FormView):
     to label articles with interests. Based on this classification a user can choose what areas is he interested in.
     These interests are all displayed to the user in a quiz view"""
 
-    permission_required = 'blog_main.set_article'
+    permission_required = 'blog_main.set_interests'
     template_name = 'login.html'
     form_class = AddInterestsForm
     success_url = '/'
@@ -255,9 +258,10 @@ class QuizView(LoginRequiredMixin, View):
             user = request.user
             interests = form.cleaned_data['interest']
             users_old_interests = Interests.objects.filter(user=user)
-            for a in users_old_interests:
-                old_interests = Interests.objects.get(name=a)
-                old_interests.user.remove(user)
+            if users_old_interests:
+                for a in users_old_interests:
+                    old_interests = Interests.objects.get(name=a)
+                    old_interests.user.remove(user)
             for i in interests:
                 new_interests = Interests.objects.get(name=i)
                 new_interests.user.add(user)
