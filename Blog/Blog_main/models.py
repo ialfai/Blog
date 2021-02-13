@@ -52,6 +52,14 @@ class UsersInterest(models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE)
 
 
+class Authors(models.Model):
+    is_author = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
+    user = models.ManyToManyField(User)
+
+
+
+
 
 
 

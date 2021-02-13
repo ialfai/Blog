@@ -188,7 +188,7 @@ class AddNewArticle(PermissionRequiredMixin, View):
     a form to add a new article. Article has many features like: author data, publication date, article status,
     picture, requests number etc."""
 
-    permission_required = 'blog_main.set_article'
+    permission_required = 'blog_main.add_article'
 
     def get(self, request):
 
