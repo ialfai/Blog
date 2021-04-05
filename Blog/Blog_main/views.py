@@ -62,7 +62,10 @@ class ArticlePage(View):
         article1 = Article.objects.get(id=article_id)
         author = article1.author
         user = request.user
-        boards = Board.objects.filter(user=user)
+        if user.is_anonymous:
+            boards = None
+        else:
+            boards = Board.objects.filter(user=user)
         if boards:
             return render(request, 'article_page.html', {'article': article1,
                                                          'author': author,
@@ -78,14 +81,18 @@ class ArticlePage(View):
             article1 = Article.objects.get(id=article_id)
             author = article1.author
             user = request.user
-            boards_for_checkbox = Board.objects.filter(user=user)
-            b = Board.objects.get(id=boards)
-            b.article.add(article1)
-            b.save()
-            return render(request, 'article_page.html', {'article': article1,
-                                                         'author': author,
-                                                         'boards': boards_for_checkbox,
-                                                         'info': 'Article has been added to the chosen board'})
+            if user.is_anonymous:
+                boards_for_checkbox = None
+                return redirect('/login/')
+            else:
+                boards_for_checkbox = Board.objects.filter(user=user)
+                b = Board.objects.get(id=boards)
+                b.article.add(article1)
+                b.save()
+                return render(request, 'article_page.html', {'article': article1,
+                                                             'author': author,
+                                                             'boards': boards_for_checkbox,
+                                                             'info': 'Article has been added to the chosen board'})
         if 'RequestArticle' in request.POST:
             article1 = Article.objects.get(id=article_id)
             article1.requests_number += 1
@@ -93,8 +100,15 @@ class ArticlePage(View):
             author = article1.author
             user = request.user
             articles = Article.objects.all()
-            boards_for_checkbox = Board.objects.filter(user=user)
-            return render(request, 'article_page.html', {'article': article1,
+            if user.is_anonymous:
+                boards_for_checkbox = None
+                return render(request, 'article_page.html', {'article': article1,
+                                                             'author': author,
+                                                             'boards': boards_for_checkbox,
+                                                             'articles': articles})
+            else:
+                boards_for_checkbox = Board.objects.filter(user=user)
+                return render(request, 'article_page.html', {'article': article1,
                                                          'author': author,
                                                          'boards': boards_for_checkbox,
                                                          'articles': articles,
